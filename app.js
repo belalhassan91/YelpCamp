@@ -1,8 +1,19 @@
 const express = require('express');
 const ejs     = require('ejs'); 
-const app = express();
-const port = 3000;
+const app     = express();
+const port    = 3000;
 const bodyParser = require("body-parser");
+const mongoose   = require("mongoose");
+//Connect Mongoose
+mongoose.connect('mongodb://localhost:27017/yelpcamp', {useNewUrlParser: true, useUnifiedTopology: true});
+
+//Schema Setup
+var campgroundSchema = new mongoose.Schema({
+    name: String,
+    image: String
+})
+
+var Campground  = mongoose.model("Campground",campgroundSchema);
 
 /** bodyParser.urlencoded(options)
  * Parses the text as URL encoded data (which is how browsers tend to send form data from regular forms set to POST)
@@ -11,10 +22,12 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
 /**bodyParser.json(options)
  * Parses the text as JSON and exposes the resulting object on req.body.
  */
 app.use(bodyParser.json());
+
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
@@ -49,7 +62,15 @@ app.get('/', (req, res) => res.render('index'))
 
 // '/campgrounds' page
 app.get('/campgrounds', (req,res)=>{
-    res.render('campground',{campgrounds:campgrounds})
+    //get all campgrounds from database
+    Campground.find({},function (err,campgrounds) {
+        if (err){
+            console.log("We can't get data from database");
+            console.log(err);
+        }else {
+            res.render('campground',{campgrounds:campgrounds})
+        }
+    })
 })
 // '/camgrounds' Post Request
 app.post('/campgrounds',(req,res)=>{
@@ -60,7 +81,7 @@ app.post('/campgrounds',(req,res)=>{
     var image= req.body.image;
     var campground = {
         name:name,
-        imgUrl:image
+        image:image
     }
     //update global array "campgrounds" with new value
     campgrounds.push(campground);
