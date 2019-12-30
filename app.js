@@ -10,7 +10,8 @@ mongoose.connect('mongodb://localhost:27017/yelpcamp', {useNewUrlParser: true, u
 //Schema Setup
 var campgroundSchema = new mongoose.Schema({
     name: String,
-    image: String
+    image: String,
+    description:String
 })
 
 var Campground  = mongoose.model("Campground",campgroundSchema);
@@ -34,6 +35,7 @@ app.set('view engine', 'ejs');
 // '/' page
 app.get('/', (req, res) => res.render('index'))
 
+
 // '/campgrounds' page
 app.get('/campgrounds', (req,res)=>{
     //get all campgrounds from database
@@ -42,7 +44,7 @@ app.get('/campgrounds', (req,res)=>{
             console.log("We can't get data from database");
             console.log(err);
         }else {
-            res.render('campground',{campgrounds:campgrounds})
+            res.render('index',{campgrounds:campgrounds})
         }
     })
 })
@@ -53,9 +55,11 @@ app.post('/campgrounds',(req,res)=>{
     console.log(req.body);
     var name = req.body.name;
     var image= req.body.image;
+    var description= req.description;
     var campground = {
         name:name,
-        image:image
+        image:image,
+        description:description
     }
     //update database "campgrounds" with new value
     Campground.create(campground,function (err,camp) {
@@ -74,6 +78,16 @@ app.post('/campgrounds',(req,res)=>{
 app.get('/campgrounds/new',(req,res)=>{
     res.render("new"); 
 })
+//
+app.get('/campgrounds/:id',(req,res)=>{
+    Campground.findById(req.params.id,function (err,foundCampground) {
+        if(err){
+            console.log(err)
+        } else{
+            res.render("show",{campground:foundCampground})
+        }
+    })
 
+})
 // Initialise app
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
