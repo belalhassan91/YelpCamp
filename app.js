@@ -33,7 +33,7 @@ app.use(bodyParser.json());
 app.set('view engine', 'ejs');
 
 // '/' page
-app.get('/', (req, res) => res.render('index'))
+app.get('/', (req, res) => res.send("Landing Page"))
 
 
 // '/campgrounds' page

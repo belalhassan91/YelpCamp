@@ -45,4 +45,10 @@ RESTFUL Route
 |INDEX |/campgrounds    |GET    |Display a list of all campground      |
 |NEW   |/campgrounds/new|GET    |Display form to make a new campground |
 |CREATE|/campgrounds    |POST   |Parse post request and update database|
-|SHOW  |/campground/:id  |GET    |Show info about one dog               | 
+|SHOW  |/campground/:id  |GET    |Show info about one dog              |
+
+RESTful Routing
+================
+* Define REST and explain why it matters
+* List all 7 RESTful routes
+* Show example of RESTful routing in practise
